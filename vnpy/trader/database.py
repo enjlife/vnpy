@@ -112,10 +112,12 @@ class BaseDatabase(ABC):
         pass
 
 
-driver: str = SETTINGS["database.driver"]
-module_name: str = f"vnpy.database.{driver}"
-try:
-    database_manager: BaseDatabase = import_module(module_name).database_manager
-except ModuleNotFoundError:
-    print(f"找不到数据库驱动{module_name}，使用默认的SQLite数据库")
-    database_manager: BaseDatabase = import_module("vnpy.database.sqlite").database_manager
+def get_database():
+    driver: str = SETTINGS["database.driver"]
+    module_name: str = f"vnpy.database.{driver}"
+    try:
+        database_manager: BaseDatabase = import_module(module_name).database_manager
+    except ModuleNotFoundError:
+        print(f"找不到数据库驱动{module_name}，使用默认的SQLite数据库")
+        database_manager: BaseDatabase = import_module("vnpy.database.sqlite").database_manager
+    return database_manager
